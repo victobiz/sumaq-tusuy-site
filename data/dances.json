@@ -1,0 +1,39 @@
+{
+  "dances": [
+    {
+      "id": "marinera",
+      "name": "Marinera",
+      "description": "Peru's elegant national dance, the Marinera is a romantic courtship dance featuring graceful movements, waving handkerchiefs, and intricate footwork. Originating from coastal Peru, it represents the art of elegant seduction and is performed at celebrations throughout the country.",
+      "origin": "Coastal Peru",
+      "image": "/images/dances/marinera.jpg"
+    },
+    {
+      "id": "huayno",
+      "name": "Huayno",
+      "description": "A lively traditional folk dance from the Andean highlands, Huayno combines pre-Columbian rhythms with Spanish influences. Dancers wear colorful traditional clothing and perform energetic steps that celebrate community and Andean heritage.",
+      "origin": "Andean Highlands",
+      "image": "/images/dances/huayno.jpg"
+    },
+    {
+      "id": "festejo",
+      "name": "Festejo",
+      "description": "A vibrant Afro-Peruvian dance characterized by its infectious rhythms and joyful energy. Festejo celebrates the African heritage in Peru with hip movements, quick footwork, and the accompaniment of cajón drums and guitars.",
+      "origin": "Coastal Peru (Afro-Peruvian)",
+      "image": "/images/dances/festejo.jpg"
+    },
+    {
+      "id": "danza-de-tijeras",
+      "name": "Danza de Tijeras",
+      "description": "The spectacular 'Scissor Dance' is an athletic ritual dance from the Ayacucho and Huancavelica regions. Dancers compete performing increasingly difficult acrobatic movements while playing large scissors, believed to have spiritual significance.",
+      "origin": "Ayacucho & Huancavelica",
+      "image": "/images/dances/tijeras.jpg"
+    },
+    {
+      "id": "diablada",
+      "name": "Diablada",
+      "description": "The dramatic 'Devil Dance' from the Puno region features elaborate devil masks and costumes in a choreographed battle between good and evil. This UNESCO-recognized dance is a highlight of the Candelaria Festival.",
+      "origin": "Puno Region",
+      "image": "/images/dances/diablada.jpg"
+    }
+  ]
+}

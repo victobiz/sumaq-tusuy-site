@@ -1,0 +1,64 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "title": "Danza de Tijeras Workshop with Yana Paqcha",
+      "date": "2026-10-17",
+      "time": "8:30 PM - 9:30 PM",
+      "location": "7777 Leesburg Pike #104N, Falls Church, VA 22043",
+      "description": "Join Sumaq Tusuy DMV as we welcome Danzaq Yana Paqcha for an incredible Danza de Tijeras workshop. Learn the history and significance of the scissors dance, introduction to steps and movement. All skill levels welcome. Donation-based class.",
+      "image": "/images/event1.jpg",
+      "status": "upcoming"
+    },
+    {
+      "id": "2",
+      "title": "Huaylarsh Master Class with Betty Caloretti",
+      "date": "2026-10-19",
+      "time": "10:00 AM - 11:00 AM",
+      "location": "1301 N Stafford St, Arlington, VA 22201",
+      "description": "Sumaq Tusuy DMV presents a special Huaylarsh Master Class with Sumaj Tusuy Miami founder and director Betty Caloretti. Learn this traditional Andean dance from a master instructor.",
+      "image": "/images/event2.jpg",
+      "status": "upcoming"
+    },
+    {
+      "id": "3",
+      "title": "Danza de Tijeras Workshop - Sunday Session",
+      "date": "2026-10-19",
+      "time": "10:00 AM - 11:00 AM",
+      "location": "1301 N Stafford St, Arlington, VA 22201",
+      "description": "Second session of our Danza de Tijeras workshop with Jorge Luis Astovilca Cupe - Danzaq Yana Paqcha. Continue learning the history and movements of Peru's iconic scissors dance.",
+      "image": "/images/event3.jpg",
+      "status": "upcoming"
+    },
+    {
+      "id": "4",
+      "title": "Peruvian Independence Day Parade",
+      "date": "2025-07-28",
+      "time": "12:00 PM",
+      "location": "Washington, DC",
+      "description": "Sumaq Tusuy DMV proudly performed at the annual Peruvian Independence Day parade in our nation's capital, showcasing traditional dances and costumes.",
+      "image": "/images/content3.jpg",
+      "status": "past"
+    },
+    {
+      "id": "5",
+      "title": "Cultural Heritage Festival Performance",
+      "date": "2025-09-15",
+      "time": "2:00 PM",
+      "location": "Embassy Row, Washington, DC",
+      "description": "A celebration of Peruvian cultural heritage featuring our signature dances. Our dancers wore traditional costumes representing various regions of Peru.",
+      "image": "/images/content7.jpg",
+      "status": "past"
+    },
+    {
+      "id": "6",
+      "title": "Annual DMV Peruvian Festival",
+      "date": "2025-08-20",
+      "time": "11:00 AM",
+      "location": "Northern Virginia",
+      "description": "Our annual showcase featuring the full ensemble performing Marinera, Huayno, and more. A family-friendly event celebrating our Peruvian heritage in the DMV community.",
+      "image": "/images/content5.jpg",
+      "status": "past"
+    }
+  ]
+}
