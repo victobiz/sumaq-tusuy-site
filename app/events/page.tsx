@@ -5,8 +5,8 @@ import { EventsList } from "@/components/events-list"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Events | Sumaq Tusuy",
-  description: "Discover upcoming performances and explore past events by Sumaq Tusuy, a Peruvian cultural dance group.",
+  title: "Events | Sumaj Tusuy",
+  description: "Discover upcoming performances and explore past events by Sumaj Tusuy, a Peruvian cultural dance group.",
 }
 
 export default async function EventsPage() {
@@ -38,7 +38,7 @@ export default async function EventsPage() {
         {/* CTA Section */}
         <div className="mt-16 text-center bg-muted rounded-xl p-8 md:p-12">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Want Sumaq Tusuy at Your Event?
+            Want Sumaj Tusuy at Your Event?
           </h2>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
             We perform at weddings, corporate events, festivals, and private celebrations. 

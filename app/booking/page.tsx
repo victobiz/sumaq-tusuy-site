@@ -3,8 +3,8 @@ import { Mail, Phone, MapPin } from "lucide-react"
 import { BookingForm } from "@/components/booking-form"
 
 export const metadata: Metadata = {
-  title: "Book a Performance | Sumaq Tusuy",
-  description: "Book Sumaq Tusuy for your wedding, corporate event, festival, or private celebration. Experience authentic Peruvian dance performances.",
+  title: "Book a Performance | Sumaj Tusuy",
+  description: "Book Sumaj Tusuy for your wedding, corporate event, festival, or private celebration. Experience authentic Peruvian dance performances.",
 }
 
 export default function BookingPage() {
@@ -44,10 +44,10 @@ export default function BookingPage() {
                   <div>
                     <p className="font-medium">Email</p>
                     <a 
-                      href="mailto:info@sumaqtusuy.com" 
+                      href="mailto:info@sumajtusuy.com" 
                       className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                     >
-                      info@sumaqtusuy.com
+                      info@sumajtusuy.com
                     </a>
                   </div>
                 </div>

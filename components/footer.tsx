@@ -21,7 +21,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold">Sumaq Tusuy</h3>
+            <h3 className="text-2xl font-bold">Sumaj Tusuy</h3>
             <p className="mt-1 text-sm text-primary-foreground/80">
               &quot;Beautiful Dance&quot; in Quechua
             </p>
@@ -37,8 +37,8 @@ export function Footer() {
             <ul className="mt-4 space-y-3">
               <li className="flex items-center gap-3 text-sm text-primary-foreground/80">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:info@sumaqtusuy.com" className="hover:text-primary-foreground transition-colors">
-                  info@sumaqtusuy.com
+                <a href="mailto:info@sumajtusuy.com" className="hover:text-primary-foreground transition-colors">
+                  info@sumajtusuy.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-primary-foreground/80">
@@ -88,7 +88,7 @@ export function Footer() {
         
         <div className="mt-12 border-t border-primary-foreground/20 pt-8">
           <p className="text-center text-sm text-primary-foreground/60">
-            &copy; {new Date().getFullYear()} Sumaq Tusuy. All rights reserved.
+            &copy; {new Date().getFullYear()} Sumaj Tusuy. All rights reserved.
           </p>
         </div>
       </div>

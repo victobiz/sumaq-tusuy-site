@@ -14,7 +14,7 @@ export function AboutSection() {
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Based in the DMV (DC, Maryland, Virginia) area, Sumaq Tusuy—meaning 
+                Based in the DMV (DC, Maryland, Virginia) area, Sumaj Tusuy—meaning 
                 &quot;Beautiful Dance&quot; in Quechua—is dedicated to sharing the rich tapestry 
                 of Peruvian dance traditions with communities across the region.
               </p>
@@ -36,7 +36,7 @@ export function AboutSection() {
             <div className="aspect-[4/5] relative rounded-lg overflow-hidden shadow-xl">
               <Image
                 src="/images/content2.jpg"
-                alt="Sumaq Tusuy DMV full dance group in colorful traditional costumes"
+                alt="Sumaj Tusuy DMV full dance group in colorful traditional costumes"
                 fill
                 className="object-cover"
               />

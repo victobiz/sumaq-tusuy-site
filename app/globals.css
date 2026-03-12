@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Sumaq Tusuy - Peru inspired palette */
+  /* Sumaj Tusuy - Peru inspired palette */
   --background: oklch(0.98 0.01 85);
   --foreground: oklch(0.25 0.03 50);
   --card: oklch(1 0 0);

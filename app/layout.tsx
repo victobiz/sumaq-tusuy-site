@@ -18,8 +18,8 @@ const sourceSans = Source_Sans_3({
 })
 
 export const metadata: Metadata = {
-  title: 'Sumaq Tusuy | Peruvian Dance Group',
-  description: 'Experience the beauty of Peruvian cultural dance. Sumaq Tusuy brings authentic Marinera, Huayno, Festejo, and traditional dances to your events.',
+  title: 'Sumaj Tusuy | Peruvian Dance Group',
+  description: 'Experience the beauty of Peruvian cultural dance. Sumaj Tusuy brings authentic Marinera, Huayno, Festejo, and traditional dances to your events.',
   generator: 'v0.app',
   icons: {
     icon: [

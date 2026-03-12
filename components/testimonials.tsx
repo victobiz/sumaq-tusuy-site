@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 const testimonials = [
   {
-    quote: "Sumaq Tusuy made our wedding unforgettable. The Marinera performance had our guests in tears. Absolutely beautiful!",
+    quote: "Sumaj Tusuy made our wedding unforgettable. The Marinera performance had our guests in tears. Absolutely beautiful!",
     author: "Maria & Carlos",
     event: "Wedding Reception",
   },

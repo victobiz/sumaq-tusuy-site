@@ -50,7 +50,7 @@ export function CTASection() {
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Whether it&apos;s a wedding, corporate event, festival, or private celebration, 
-            Sumaq Tusuy will create an unforgettable cultural experience for you and your guests.
+            Sumaj Tusuy will create an unforgettable cultural experience for you and your guests.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild className="text-lg px-8">

@@ -9,7 +9,7 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/content1.jpg"
-          alt="Sumaq Tusuy dancer performing in traditional red and pink costume"
+          alt="Sumaj Tusuy dancer performing in traditional red and pink costume"
           fill
           className="object-cover object-top"
           priority
@@ -23,7 +23,7 @@ export function Hero() {
           Peruvian Cultural Dance Group
         </p>
         <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-background mb-6 text-balance">
-          Sumaq Tusuy
+          Sumaj Tusuy
         </h1>
         <p className="text-xl md:text-2xl text-background/90 font-serif italic mb-2">
           &quot;Beautiful Dance&quot;
