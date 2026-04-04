@@ -2,25 +2,6 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  min-height: 100%;
-  background: #fffdfb;
-  color: #1f2937;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  overflow-x: hidden;
-}
-
-.app-shell {
-  background: #fffdfb;
-}
-
-/* Main scrolly section */
 .scrolly-layout {
   position: relative;
   min-height: 400vh;
@@ -34,7 +15,6 @@ body {
   min-height: 400vh;
 }
 
-/* Sticky visual stage */
 .sticky-stage {
   position: sticky;
   top: 0;
@@ -52,7 +32,6 @@ body {
   z-index: 1;
 }
 
-/* Ambient overlay */
 .vignette-overlay {
   position: absolute;
   inset: 0;
@@ -73,7 +52,6 @@ body {
     );
 }
 
-/* Status */
 .status-pill {
   position: absolute;
   top: 16px;
@@ -87,7 +65,6 @@ body {
   backdrop-filter: blur(8px);
 }
 
-/* Story panel base positioning */
 .info-panel {
   position: absolute;
   left: 32px;
@@ -96,7 +73,6 @@ body {
   z-index: 20;
 }
 
-/* Premium light panel */
 .premium-panel,
 .light-theme-panel {
   padding: 22px 22px 18px;
@@ -118,7 +94,6 @@ body {
   color: rgba(127, 29, 29, 0.68);
 }
 
-/* Panel layout */
 .panel-topline {
   display: flex;
   align-items: center;
@@ -153,7 +128,6 @@ body {
   );
 }
 
-/* Region image/media */
 .panel-media {
   width: 100%;
   height: 180px;
@@ -172,7 +146,6 @@ body {
   object-fit: cover;
 }
 
-/* Chips */
 .panel-meta-row {
   display: flex;
   flex-wrap: wrap;
@@ -191,7 +164,6 @@ body {
   border: 1px solid rgba(127, 29, 29, 0.12);
 }
 
-/* Highlight block */
 .panel-highlight {
   padding: 14px 14px 12px;
   border-radius: 18px;
@@ -216,7 +188,6 @@ body {
   color: #7f1d1d;
 }
 
-/* Description */
 .panel-description-block {
   margin-bottom: 18px;
 }
@@ -229,7 +200,6 @@ body {
   color: #374151;
 }
 
-/* Footer */
 .panel-footer {
   display: flex;
   align-items: center;
@@ -254,7 +224,6 @@ body {
   );
 }
 
-/* Chapter indicator */
 .chapter-indicator {
   position: absolute;
   top: 24px;
@@ -310,7 +279,6 @@ body {
   font-weight: 600;
 }
 
-/* Story cards */
 .story-column {
   position: relative;
   z-index: 25;
@@ -357,78 +325,7 @@ body {
   color: #4b5563;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .story-column,
-  .phase-two-story {
-    width: 100%;
-    padding: 0 16px;
-    margin: 0;
-    padding-top: 100vh;
-  }
-
-  .story-step,
-  .phase-two-step {
-    min-height: 105vh;
-    justify-content: center;
-  }
-
-  .story-card {
-    margin-top: 42vh;
-  }
-
-  .info-panel {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    width: auto;
-  }
-
-  .premium-panel,
-  .light-theme-panel {
-    padding: 18px 18px 16px;
-    border-radius: 20px;
-  }
-
-  .panel-title-wrap h2,
-  .info-panel h2 {
-    font-size: 2rem;
-  }
-
-  .panel-meta-row {
-    gap: 6px;
-  }
-
-  .panel-chip {
-    font-size: 0.68rem;
-    padding: 6px 9px;
-  }
-
-  .panel-description,
-  .info-panel p {
-    font-size: 0.94rem;
-  }
-
-  .chapter-indicator {
-    top: 16px;
-    right: 16px;
-    width: 150px;
-    gap: 8px;
-  }
-
-  .chapter-dot {
-    padding: 8px 10px;
-  }
-
-  .chapter-name {
-    font-size: 0.85rem;
-  }
-
-  .panel-media {
-    height: 150px;
-  }
-}
-
+/* Mobile optimized */
 @media (max-width: 900px) {
   .scrolly-layout,
   .phase-two-layout {

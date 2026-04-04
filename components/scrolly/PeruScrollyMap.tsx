@@ -1,6 +1,5 @@
 'use client';
 
-
 import { useEffect, useRef, useState } from 'react';
 import { Application, Assets, Container, Sprite, Graphics, Text } from 'pixi.js';
 import gsap from 'gsap';
@@ -45,6 +44,29 @@ export default function PeruScrollyMap() {
   const [activeRegion, setActiveRegion] = useState<Region>(regions[0]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'image-error' | 'error'>('loading');
 
+  const jumpToRegion = (regionId: string) => {
+    const idx = regions.findIndex((r) => r.id === regionId);
+    if (idx === -1) return;
+
+    const timelineTrigger = scrollTriggersRef.current.find((trigger) => {
+      const vars = trigger.vars as { animation?: gsap.core.Timeline };
+      return vars.animation === timelineRef.current;
+    });
+
+    if (!timelineTrigger) return;
+
+    const totalStops = regions.length;
+    const progress = totalStops <= 1 ? 0 : idx / (totalStops - 1);
+    const targetY =
+      timelineTrigger.start +
+      (timelineTrigger.end - timelineTrigger.start) * progress;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
+  };
+
   useEffect(() => {
     let destroyed = false;
 
@@ -81,7 +103,7 @@ export default function PeruScrollyMap() {
       markersRef.current.forEach(({ region, dot, label, pulse, glow }) => {
         const active = region.id === regionId;
 
-        gsap.to(dot.scale, {
+        gsap.to(dot.scale as any, {
           x: active ? 1.35 : 1,
           y: active ? 1.35 : 1,
           duration: 0.28,
@@ -106,7 +128,7 @@ export default function PeruScrollyMap() {
           overwrite: true,
         });
 
-        gsap.to(glow.scale, {
+        gsap.to(glow.scale as any, {
           x: active ? 1.8 : 1,
           y: active ? 1.8 : 1,
           duration: 0.35,
@@ -142,17 +164,17 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
+      const isMobile = hostW < 900;
 
       const texture = mapSprite.texture;
       const texW = texture.width || 1000;
       const texH = texture.height || 1400;
 
       mapSprite.x = hostW / 2;
-      mapSprite.y = hostH / 2;
+      mapSprite.y = isMobile ? hostH * 0.38 : hostH / 2;
 
-      const isMobile = hostW < 900;
-const maxW = isMobile ? hostW * 0.82 : hostW * 0.68;
-const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
+      const maxW = isMobile ? hostW * 0.82 : hostW * 0.68;
+      const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
       const scale = Math.min(maxW / texW, maxH / texH);
 
       mapSprite.width = texW * scale;
@@ -188,7 +210,6 @@ const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
       particlesRef.current.forEach(({ node }, index) => {
         if (node.x > hostW) node.x = hostW * 0.2;
         if (node.y > hostH) node.y = hostH * 0.3;
-
         if (index % 3 === 0 && node.y < 0) {
           node.y = hostH;
         }
@@ -204,16 +225,17 @@ const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
+      const isMobile = hostW < 900;
 
       const pointX = mapSprite.x + (region.x - 0.5) * mapSprite.width;
       const pointY = mapSprite.y + (region.y - 0.5) * mapSprite.height;
-      const zoom = region.zoom || 1.2;
+      const zoom = isMobile ? Math.min(region.zoom, 1.12) : region.zoom || 1.2;
 
       return {
         scaleX: zoom,
         scaleY: zoom,
         x: hostW / 2 - pointX * zoom,
-        y: hostH / 2 - pointY * zoom,
+        y: (isMobile ? hostH * 0.38 : hostH / 2) - pointY * zoom,
       };
     };
 
@@ -228,9 +250,10 @@ const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
       const isMobile = hostW < 900;
-const count = isMobile
-  ? Math.min(24, Math.max(14, Math.floor(hostW / 30)))
-  : Math.min(70, Math.max(36, Math.floor(hostW / 22)));
+
+      const count = isMobile
+        ? Math.min(24, Math.max(14, Math.floor(hostW / 30)))
+        : Math.min(70, Math.max(36, Math.floor(hostW / 22)));
 
       for (let i = 0; i < count; i++) {
         const node = new Graphics();
@@ -238,15 +261,15 @@ const count = isMobile
 
         node.circle(0, 0, r);
         node.fill(ACCENT);
-        node.alpha = 0.04 + Math.random() * 0.08;
+        node.alpha = isMobile ? 0.025 + Math.random() * 0.05 : 0.04 + Math.random() * 0.08;
 
         node.x = Math.random() * hostW;
         node.y = Math.random() * hostH;
 
         particleLayer.addChild(node);
 
-        const driftX = (Math.random() - 0.5) * 30;
-        const driftY = 20 + Math.random() * 60;
+        const driftX = (Math.random() - 0.5) * (isMobile ? 16 : 30);
+        const driftY = (isMobile ? 10 : 20) + Math.random() * (isMobile ? 28 : 60);
         const duration = 5 + Math.random() * 5;
 
         gsap.to(node, {
@@ -259,7 +282,7 @@ const count = isMobile
         });
 
         gsap.to(node, {
-          alpha: 0.02 + Math.random() * 0.08,
+          alpha: isMobile ? 0.01 + Math.random() * 0.04 : 0.02 + Math.random() * 0.08,
           duration: duration * 0.8,
           repeat: -1,
           yoyo: true,
@@ -270,144 +293,132 @@ const count = isMobile
       }
     };
 
-  const jumpToRegion = (regionId: string) => {
-  const idx = regions.findIndex((r) => r.id === regionId);
-  if (idx === -1) return;
+    const createMarkers = () => {
+      const markerLayer = markerLayerRef.current;
+      const mapSprite = mapSpriteRef.current;
+      const canvasHost = canvasHostRef.current;
+      if (!markerLayer || !mapSprite || !canvasHost) return;
 
-  const timelineTrigger = scrollTriggersRef.current.find((trigger) => {
-    const vars = trigger.vars as { animation?: gsap.core.Timeline };
-    return vars.animation === timelineRef.current;
-  });
+      const isMobile = canvasHost.clientWidth < 900;
 
-  if (!timelineTrigger) return;
+      destroyMarkers();
+      markerLayer.removeChildren();
 
-  const totalStops = regions.length;
-  const progress = totalStops <= 1 ? 0 : idx / (totalStops - 1);
-  const targetY =
-    timelineTrigger.start +
-    (timelineTrigger.end - timelineTrigger.start) * progress;
+      regions.forEach((region) => {
+        const glow = new Graphics();
+        glow.circle(0, 0, isMobile ? 14 : 20);
+        glow.fill(ACCENT);
+        glow.alpha = 0.06;
+        glow.eventMode = 'none';
 
-  window.scrollTo({
-    top: targetY,
-    behavior: 'smooth',
-  });
-};
+        const pulse = new Graphics();
+        pulse.circle(0, 0, isMobile ? 13 : 18);
+        pulse.stroke({ width: isMobile ? 1.5 : 2, color: ACCENT, alpha: 0.3 });
+        pulse.alpha = 0.3;
+        pulse.eventMode = 'none';
 
-const createMarkers = () => {
-  const markerLayer = markerLayerRef.current;
-  const mapSprite = mapSpriteRef.current;
-  if (!markerLayer || !mapSprite) return;
+        const dot = new Graphics();
+        dot.circle(0, 0, isMobile ? 6 : 8);
+        dot.fill(ACCENT);
+        dot.alpha = 0.55;
+        dot.eventMode = 'static';
+        dot.cursor = 'pointer';
 
-  destroyMarkers();
-  markerLayer.removeChildren();
+        const label = new Text({
+          text: region.name,
+          style: {
+            fill: '#7f1d1d',
+            fontSize: isMobile ? 11 : 13,
+          },
+        });
+        label.alpha = isMobile ? 0 : 0.45;
+        label.eventMode = 'none';
 
-  regions.forEach((region) => {
-    const glow = new Graphics();
-    glow.circle(0, 0, 20);
-    glow.fill(ACCENT);
-    glow.alpha = 0.06;
-    glow.eventMode = 'none';
+        dot.on('pointertap', () => {
+          jumpToRegion(region.id);
+        });
 
-    const pulse = new Graphics();
-    pulse.circle(0, 0, 18);
-    pulse.stroke({ width: 2, color: ACCENT, alpha: 0.3 });
-    pulse.alpha = 0.3;
-    pulse.eventMode = 'none';
+        dot.on('pointerover', () => {
+          gsap.to(dot.scale as any, {
+            x: 1.22,
+            y: 1.22,
+            duration: 0.18,
+            overwrite: true,
+          });
 
-    const dot = new Graphics();
-    dot.circle(0, 0, 8);
-    dot.fill(ACCENT);
-    dot.alpha = 0.55;
-    dot.eventMode = 'static';
-    dot.cursor = 'pointer';
+          if (!isMobile) {
+            gsap.to(label, {
+              alpha: 1,
+              duration: 0.18,
+              overwrite: true,
+            });
+          }
 
-    const label = new Text({
-      text: region.name,
-      style: {
-        fill: '#7f1d1d',
-        fontSize: 13,
-      },
-    });
-    label.alpha = 0.45;
-    label.eventMode = 'none';
+          gsap.to(glow, {
+            alpha: 0.18,
+            duration: 0.18,
+            overwrite: true,
+          });
+        });
 
-    dot.on('pointertap', () => {
-      jumpToRegion(region.id);
-    });
+        dot.on('pointerout', () => {
+          const active = activeRegionRef.current.id === region.id;
 
-    dot.on('pointerover', () => {
-      gsap.to(dot.scale as any, {
-        x: 1.22,
-        y: 1.22,
-        duration: 0.18,
-        overwrite: true,
+          gsap.to(dot.scale as any, {
+            x: active ? 1.35 : 1,
+            y: active ? 1.35 : 1,
+            duration: 0.2,
+            overwrite: true,
+          });
+
+          if (!isMobile) {
+            gsap.to(label, {
+              alpha: active ? 1 : 0.38,
+              duration: 0.2,
+              overwrite: true,
+            });
+          }
+
+          gsap.to(glow, {
+            alpha: active ? 0.22 : 0.05,
+            duration: 0.2,
+            overwrite: true,
+          });
+        });
+
+        gsap.to(pulse.scale as any, {
+          x: 1.5,
+          y: 1.5,
+          duration: 1.8,
+          repeat: -1,
+          ease: 'power1.out',
+        });
+
+        gsap.to(pulse, {
+          alpha: 0,
+          duration: 1.8,
+          repeat: -1,
+          ease: 'power1.out',
+        });
+
+        markerLayer.addChild(glow);
+        markerLayer.addChild(pulse);
+        markerLayer.addChild(dot);
+        markerLayer.addChild(label);
+
+        markersRef.current.push({ region, dot, pulse, label, glow });
       });
 
-      gsap.to(label, {
-        alpha: 1,
-        duration: 0.18,
-        overwrite: true,
-      });
-
-      gsap.to(glow, {
-        alpha: 0.18,
-        duration: 0.18,
-        overwrite: true,
-      });
-    });
-
-    dot.on('pointerout', () => {
-      const active = activeRegionRef.current.id === region.id;
-
-      gsap.to(dot.scale as any, {
-        x: active ? 1.35 : 1,
-        y: active ? 1.35 : 1,
-        duration: 0.2,
-        overwrite: true,
-      });
-
-      gsap.to(label, {
-        alpha: active ? 1 : 0.38,
-        duration: 0.2,
-        overwrite: true,
-      });
-
-      gsap.to(glow, {
-        alpha: active ? 0.22 : 0.05,
-        duration: 0.2,
-        overwrite: true,
-      });
-    });
-
-    gsap.to(pulse.scale as any, {
-      x: 1.5,
-      y: 1.5,
-      duration: 1.8,
-      repeat: -1,
-      ease: 'power1.out',
-    });
-
-    gsap.to(pulse, {
-      alpha: 0,
-      duration: 1.8,
-      repeat: -1,
-      ease: 'power1.out',
-    });
-
-    markerLayer.addChild(glow);
-    markerLayer.addChild(pulse);
-    markerLayer.addChild(dot);
-    markerLayer.addChild(label);
-
-    markersRef.current.push({ region, dot, pulse, label, glow });
-  });
-
-  positionMarkers();
-};
+      positionMarkers();
+    };
 
     const buildTimeline = () => {
       const scene = sceneRef.current;
-      if (!scene || !rootRef.current) return;
+      const root = rootRef.current;
+      const canvasHost = canvasHostRef.current;
+      if (!scene || !root || !canvasHost) return;
+
+      const isMobile = canvasHost.clientWidth < 900;
 
       killOwnedScrollTriggers();
       killTimeline();
@@ -454,14 +465,14 @@ const createMarkers = () => {
 
       const timelineTrigger = ScrollTrigger.create({
         animation: tl,
-        trigger: rootRef.current,
+        trigger: root,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.15,
+        scrub: isMobile ? 0.7 : 1.15,
       });
 
       const activeStateTrigger = ScrollTrigger.create({
-        trigger: rootRef.current,
+        trigger: root,
         start: 'top top',
         end: 'bottom bottom',
         onUpdate: (self) => {
