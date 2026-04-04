@@ -428,3 +428,121 @@ body {
     height: 150px;
   }
 }
+
+@media (max-width: 900px) {
+  .scrolly-layout,
+  .phase-two-layout {
+    min-height: 280vh;
+  }
+
+  .sticky-stage {
+    height: 100svh;
+  }
+
+  .chapter-indicator {
+    display: none;
+  }
+
+  .info-panel {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+    max-width: none;
+    z-index: 30;
+  }
+
+  .premium-panel,
+  .light-theme-panel {
+    padding: 14px 14px 12px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  .panel-topline {
+    margin-bottom: 10px;
+  }
+
+  .panel-title-wrap h2,
+  .info-panel h2 {
+    font-size: 1.5rem;
+    line-height: 1.05;
+  }
+
+  .panel-media {
+    height: 120px;
+    margin: 12px 0;
+    border-radius: 12px;
+  }
+
+  .panel-meta-row {
+    gap: 6px;
+    margin: 10px 0 12px;
+  }
+
+  .panel-chip {
+    font-size: 0.62rem;
+    padding: 5px 8px;
+  }
+
+  .panel-highlight {
+    padding: 10px 10px 9px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  .panel-highlight-value {
+    font-size: 1rem;
+  }
+
+  .panel-description,
+  .info-panel p {
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin: 0 0 8px;
+  }
+
+  .panel-footer {
+    gap: 8px;
+  }
+
+  .panel-footer-label {
+    font-size: 0.62rem;
+  }
+
+  .story-column,
+  .phase-two-story {
+    width: 100%;
+    margin: 0;
+    padding: 100svh 12px 0;
+  }
+
+  .story-step,
+  .phase-two-step {
+    min-height: 85vh;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .story-card {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .story-card h3 {
+    font-size: 1.25rem;
+    margin-top: 6px;
+    margin-bottom: 8px;
+  }
+
+  .story-card p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .step-label {
+    font-size: 0.68rem;
+  }
+}

@@ -150,8 +150,9 @@ export default function PeruScrollyMap() {
       mapSprite.x = hostW / 2;
       mapSprite.y = hostH / 2;
 
-      const maxW = hostW * 0.68;
-      const maxH = hostH * 0.86;
+      const isMobile = hostW < 900;
+const maxW = isMobile ? hostW * 0.82 : hostW * 0.68;
+const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
       const scale = Math.min(maxW / texW, maxH / texH);
 
       mapSprite.width = texW * scale;
@@ -226,7 +227,10 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
-      const count = Math.min(70, Math.max(36, Math.floor(hostW / 22)));
+      const isMobile = hostW < 900;
+const count = isMobile
+  ? Math.min(24, Math.max(14, Math.floor(hostW / 30)))
+  : Math.min(70, Math.max(36, Math.floor(hostW / 22)));
 
       for (let i = 0; i < count; i++) {
         const node = new Graphics();
