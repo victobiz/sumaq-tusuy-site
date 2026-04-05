@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Application, Assets, Container, Sprite, Graphics, Text } from 'pixi.js';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -10,6 +10,7 @@ import './peru-scrolly-map.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const ACCENT = 0xb91c1c;
+const FALLBACK_BG = '/peru-map-placeholder.png';
 
 type MarkerItem = {
   region: Region;
@@ -36,50 +37,13 @@ function useIsMobile(breakpoint = 900) {
   return isMobile;
 }
 
-function MobileRegionCard({
-  region,
-  index,
-}: {
-  region: Region;
-  index: number;
-}) {
-  return (
-    <article className="mobile-region-card">
-      <div className="mobile-region-media">
-        <img src={region.image} alt={region.imageAlt || region.name} />
-      </div>
-
-      <div className="mobile-region-body">
-        <p className="mobile-step-label">
-          Stop {String(index + 1).padStart(2, '0')}
-        </p>
-
-        <h3>{region.name}</h3>
-
-        <div className="mobile-chip-row">
-          {(region.chips || []).map((chip) => (
-            <span key={chip} className="mobile-chip">
-              {chip}
-            </span>
-          ))}
-        </div>
-
-        <p className="mobile-featured-dance">
-          <strong>Featured Dance:</strong> {region.dance}
-        </p>
-
-        <p className="mobile-region-description">{region.description}</p>
-      </div>
-    </article>
-  );
-}
-
 export default function PeruScrollyMap() {
   const isMobile = useIsMobile();
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasHostRef = useRef<HTMLDivElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const bgImgRef = useRef<HTMLImageElement | null>(null);
 
   const appRef = useRef<Application | null>(null);
   const sceneRef = useRef<Container | null>(null);
@@ -95,6 +59,7 @@ export default function PeruScrollyMap() {
   const activeRegionRef = useRef<Region>(regions[0]);
 
   const [activeRegion, setActiveRegion] = useState<Region>(regions[0]);
+  const [bgSrc, setBgSrc] = useState<string>(regions[0].image || FALLBACK_BG);
   const [status, setStatus] = useState<'loading' | 'ready' | 'image-error' | 'error'>('loading');
 
   const jumpToRegion = (regionId: string) => {
@@ -121,14 +86,6 @@ export default function PeruScrollyMap() {
   };
 
   useEffect(() => {
-    if (isMobile) {
-      if (appRef.current) {
-        appRef.current.destroy(true, { children: true });
-        appRef.current = null;
-      }
-      return;
-    }
-
     let destroyed = false;
 
     const killOwnedScrollTriggers = () => {
@@ -143,21 +100,71 @@ export default function PeruScrollyMap() {
       }
     };
 
-    const destroyMarkers = () => {
+    const killTweensForMarkers = () => {
       markersRef.current.forEach(({ dot, pulse, label, glow }) => {
+        gsap.killTweensOf(dot);
+        gsap.killTweensOf(dot.scale);
+        gsap.killTweensOf(pulse);
+        gsap.killTweensOf(pulse.scale);
+        gsap.killTweensOf(label);
+        gsap.killTweensOf(glow);
+        gsap.killTweensOf(glow.scale);
+      });
+    };
+
+    const killTweensForParticles = () => {
+      particlesRef.current.forEach(({ node }) => {
+        gsap.killTweensOf(node);
+      });
+    };
+
+    const destroyMarkers = () => {
+      killTweensForMarkers();
+
+      markersRef.current.forEach(({ dot, pulse, label, glow }) => {
+        if (dot.parent) dot.parent.removeChild(dot);
+        if (pulse.parent) pulse.parent.removeChild(pulse);
+        if (label.parent) label.parent.removeChild(label);
+        if (glow.parent) glow.parent.removeChild(glow);
+
         dot.destroy();
         pulse.destroy();
         label.destroy();
         glow.destroy();
       });
+
       markersRef.current = [];
     };
 
     const destroyParticles = () => {
+      killTweensForParticles();
+
       particlesRef.current.forEach(({ node }) => {
+        if (node.parent) node.parent.removeChild(node);
         node.destroy();
       });
+
       particlesRef.current = [];
+    };
+
+    const fadeOverlayCopy = () => {
+      if (!overlayRef.current) return;
+
+      gsap.fromTo(
+        overlayRef.current,
+        { y: 10, opacity: 0.68 },
+        { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }
+      );
+    };
+
+    const fadeBackground = () => {
+      if (!bgImgRef.current) return;
+
+      gsap.fromTo(
+        bgImgRef.current,
+        { opacity: 0.12, scale: 1.03 },
+        { opacity: 1, scale: 1.02, duration: 0.45, ease: 'power2.out' }
+      );
     };
 
     const setMarkerState = (regionId: string) => {
@@ -172,19 +179,19 @@ export default function PeruScrollyMap() {
         });
 
         gsap.to(dot, {
-          alpha: active ? 1 : 0.42,
+          alpha: active ? 1 : 0.48,
           duration: 0.28,
           overwrite: true,
         });
 
         gsap.to(label, {
-          alpha: active ? 1 : 0.38,
+          alpha: active ? 1 : isMobile ? 0.8 : 0.52,
           duration: 0.28,
           overwrite: true,
         });
 
         gsap.to(pulse, {
-          alpha: active ? 0.7 : 0.16,
+          alpha: active ? 0.7 : 0.18,
           duration: 0.28,
           overwrite: true,
         });
@@ -207,15 +214,9 @@ export default function PeruScrollyMap() {
     const updateActiveRegion = (region: Region) => {
       activeRegionRef.current = region;
       setActiveRegion(region);
+      setBgSrc(region.image || FALLBACK_BG);
       setMarkerState(region.id);
-
-      if (panelRef.current) {
-        gsap.fromTo(
-          panelRef.current,
-          { y: 18, opacity: 0.65 },
-          { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }
-        );
-      }
+      fadeOverlayCopy();
     };
 
     const placeMap = () => {
@@ -233,8 +234,8 @@ export default function PeruScrollyMap() {
       mapSprite.x = hostW / 2;
       mapSprite.y = hostH / 2;
 
-      const maxW = hostW * 0.68;
-      const maxH = hostH * 0.86;
+      const maxW = isMobile ? hostW * 0.9 : hostW * 0.68;
+      const maxH = isMobile ? hostH * 0.8 : hostH * 0.86;
       const scale = Math.min(maxW / texW, maxH / texH);
 
       mapSprite.width = texW * scale;
@@ -244,6 +245,9 @@ export default function PeruScrollyMap() {
     const positionMarkers = () => {
       const mapSprite = mapSpriteRef.current;
       if (!mapSprite) return;
+
+      const labelOffsetX = isMobile ? 10 : 12;
+      const labelOffsetY = isMobile ? -8 : -10;
 
       markersRef.current.forEach(({ region, dot, pulse, label, glow }) => {
         const x = mapSprite.x + (region.x - 0.5) * mapSprite.width;
@@ -255,8 +259,8 @@ export default function PeruScrollyMap() {
         pulse.y = y;
         glow.x = x;
         glow.y = y;
-        label.x = x + 12;
-        label.y = y - 10;
+        label.x = x + labelOffsetX;
+        label.y = y + labelOffsetY;
       });
     };
 
@@ -268,6 +272,7 @@ export default function PeruScrollyMap() {
       const hostH = canvasHost.clientHeight || window.innerHeight;
 
       particlesRef.current.forEach(({ node }, index) => {
+        if (!node || node.destroyed) return;
         if (node.x > hostW) node.x = hostW * 0.2;
         if (node.y > hostH) node.y = hostH * 0.3;
         if (index % 3 === 0 && node.y < 0) {
@@ -308,7 +313,7 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
-      const count = Math.min(70, Math.max(36, Math.floor(hostW / 22)));
+      const count = isMobile ? 14 : Math.min(70, Math.max(36, Math.floor(hostW / 22)));
 
       for (let i = 0; i < count; i++) {
         const node = new Graphics();
@@ -316,7 +321,7 @@ export default function PeruScrollyMap() {
 
         node.circle(0, 0, r);
         node.fill(ACCENT);
-        node.alpha = 0.04 + Math.random() * 0.08;
+        node.alpha = isMobile ? 0.03 + Math.random() * 0.05 : 0.04 + Math.random() * 0.08;
 
         node.x = Math.random() * hostW;
         node.y = Math.random() * hostH;
@@ -337,7 +342,7 @@ export default function PeruScrollyMap() {
         });
 
         gsap.to(node, {
-          alpha: 0.02 + Math.random() * 0.08,
+          alpha: 0.02 + Math.random() * 0.06,
           duration: duration * 0.8,
           repeat: -1,
           yoyo: true,
@@ -358,32 +363,32 @@ export default function PeruScrollyMap() {
 
       regions.forEach((region) => {
         const glow = new Graphics();
-        glow.circle(0, 0, 20);
+        glow.circle(0, 0, isMobile ? 16 : 20);
         glow.fill(ACCENT);
         glow.alpha = 0.06;
         glow.eventMode = 'none';
 
         const pulse = new Graphics();
-        pulse.circle(0, 0, 18);
+        pulse.circle(0, 0, isMobile ? 15 : 18);
         pulse.stroke({ width: 2, color: ACCENT, alpha: 0.3 });
         pulse.alpha = 0.3;
         pulse.eventMode = 'none';
 
         const dot = new Graphics();
-        dot.circle(0, 0, 8);
+        dot.circle(0, 0, isMobile ? 6 : 8);
         dot.fill(ACCENT);
-        dot.alpha = 0.55;
+        dot.alpha = 0.6;
         dot.eventMode = 'static';
         dot.cursor = 'pointer';
 
         const label = new Text({
           text: region.name,
           style: {
-            fill: '#7f1d1d',
-            fontSize: 13,
+            fill: '#fff4f4',
+            fontSize: isMobile ? 11 : 13,
           },
         });
-        label.alpha = 0.45;
+        label.alpha = isMobile ? 0.8 : 0.52;
         label.eventMode = 'none';
 
         dot.on('pointertap', () => {
@@ -422,7 +427,7 @@ export default function PeruScrollyMap() {
           });
 
           gsap.to(label, {
-            alpha: active ? 1 : 0.38,
+            alpha: active ? 1 : isMobile ? 0.8 : 0.52,
             duration: 0.2,
             overwrite: true,
           });
@@ -553,10 +558,10 @@ export default function PeruScrollyMap() {
 
         const app = new Application();
         await app.init({
-          resizeTo: canvasHostRef.current,
-          background: '#fff7f7',
-          antialias: true,
-        });
+  resizeTo: canvasHostRef.current,
+  backgroundAlpha: 0,
+  antialias: true,
+});
 
         if (destroyed) {
           app.destroy(true);
@@ -568,6 +573,7 @@ export default function PeruScrollyMap() {
         app.canvas.style.width = '100%';
         app.canvas.style.height = '100%';
         app.canvas.style.display = 'block';
+        app.canvas.style.background = 'transparent';
 
         const scene = new Container();
         sceneRef.current = scene;
@@ -590,6 +596,7 @@ export default function PeruScrollyMap() {
 
         const mapSprite = new Sprite(texture);
         mapSprite.anchor.set(0.5);
+        mapSprite.alpha = 1;
         mapSpriteRef.current = mapSprite;
         scene.addChild(mapSprite);
 
@@ -640,6 +647,10 @@ export default function PeruScrollyMap() {
 
       killOwnedScrollTriggers();
       killTimeline();
+
+      killTweensForMarkers();
+      killTweensForParticles();
+
       destroyMarkers();
       destroyParticles();
 
@@ -650,42 +661,25 @@ export default function PeruScrollyMap() {
     };
   }, [isMobile]);
 
-  const mobileCards = useMemo(
-    () =>
-      regions.map((region, index) => (
-        <MobileRegionCard key={region.id} region={region} index={index} />
-      )),
-    []
-  );
-
-  if (isMobile) {
-    return (
-      <section className="mobile-scrolly-shell">
-        <div className="mobile-map-hero">
-          <div className="mobile-map-hero-inner">
-            <p className="mobile-hero-eyebrow">Explore the Culture</p>
-            <h2>Discover dance traditions across Peru</h2>
-            <p className="mobile-hero-copy">
-              Explore the regions below to see how movement, music, and tradition vary across the country.
-            </p>
-
-            <div className="mobile-map-preview">
-              <img
-                src="/peru-map-placeholder.png"
-                alt="Illustrated map of Peru"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="mobile-region-list">{mobileCards}</div>
-      </section>
-    );
-  }
-
   return (
     <div className="scrolly-layout phase-two-layout" ref={rootRef}>
       <div className="sticky-stage">
+        <div className="stage-image-layer">
+          <img
+            ref={bgImgRef}
+            className="stage-image-photo"
+            src={bgSrc}
+            alt={activeRegion.imageAlt || activeRegion.name}
+            onLoad={fadeInBackground}
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (img.src.includes(FALLBACK_BG)) return;
+              img.src = FALLBACK_BG;
+            }}
+          />
+        </div>
+
+        <div className="stage-image-dim" />
         <div className="canvas-host" ref={canvasHostRef} />
         <div className="vignette-overlay" />
 
@@ -693,92 +687,61 @@ export default function PeruScrollyMap() {
           <div className="status-pill">Status: {status}</div>
         )}
 
-        <div className="chapter-indicator">
-          {regions.map((region, index) => {
-            const active = activeRegion.id === region.id;
+        {!isMobile && (
+          <div className="chapter-indicator">
+            {regions.map((region, index) => {
+              const active = activeRegion.id === region.id;
 
-            return (
-              <button
-                key={region.id}
-                type="button"
-                className={`chapter-dot ${active ? 'is-active' : ''}`}
-                onClick={() => jumpToRegion(region.id)}
-                aria-label={`Go to ${region.name}`}
-              >
-                <span className="chapter-number">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span className="chapter-name">{region.name}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="info-panel premium-panel light-theme-panel" ref={panelRef}>
-          <div className="panel-topline">
-            <p className="eyebrow">Region Focus</p>
-            <span className="panel-index">
-              {String(
-                Math.max(
-                  1,
-                  regions.findIndex((r) => r.id === activeRegion.id) + 1
-                )
-              ).padStart(2, '0')}
-            </span>
+              return (
+                <button
+                  key={region.id}
+                  type="button"
+                  className={`chapter-dot ${active ? 'is-active' : ''}`}
+                  onClick={() => jumpToRegion(region.id)}
+                  aria-label={`Go to ${region.name}`}
+                >
+                  <span className="chapter-number">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="chapter-name">{region.name}</span>
+                </button>
+              );
+            })}
           </div>
+        )}
 
-          <div className="panel-title-wrap">
-            <h2>{activeRegion.name}</h2>
-            <div className="panel-rule" />
-          </div>
+        <div
+          className={`region-overlay-copy ${isMobile ? 'is-mobile' : 'is-desktop'}`}
+          ref={overlayRef}
+        >
+          <p className="region-overlay-eyebrow">
+            Stop{' '}
+            {String(
+              Math.max(1, regions.findIndex((r) => r.id === activeRegion.id) + 1)
+            ).padStart(2, '0')}
+          </p>
 
-          <div className="panel-media">
-            <img
-              src={activeRegion.image}
-              alt={activeRegion.imageAlt || activeRegion.name}
-            />
-          </div>
-
-          <div className="panel-meta-row">
-            {(activeRegion.chips || []).map((chip) => (
-              <span key={chip} className="panel-chip">
-                {chip}
-              </span>
-            ))}
-          </div>
-
-          <div className="panel-highlight">
-            <span className="panel-highlight-label">Featured Dance</span>
-            <p className="panel-highlight-value">{activeRegion.dance}</p>
-          </div>
-
-          <div className="panel-description-block">
-            <p className="panel-description">{activeRegion.description}</p>
-          </div>
-
-          <div className="panel-footer">
-            <span className="panel-footer-label">Scroll to continue</span>
-            <div className="panel-footer-line" />
-          </div>
+          <h2>{activeRegion.name}</h2>
+          <p className="region-overlay-dance">{activeRegion.dance}</p>
+          <p className="region-overlay-description">{activeRegion.description}</p>
         </div>
       </div>
 
-      <div className="story-column phase-two-story">
-        {regions.map((region, index) => (
-          <section key={region.id} className="story-step phase-two-step">
-            <div className="story-card">
-              <p className="step-label">
-                Stop {String(index + 1).padStart(2, '0')}
-              </p>
-              <h3>{region.name}</h3>
-              <p>
-                <strong>{region.dance}</strong>
-              </p>
-              <p>{region.description}</p>
-            </div>
-          </section>
+      <div className="scroll-sentinel-column" aria-hidden="true">
+        {regions.map((region) => (
+          <section key={region.id} className="scroll-sentinel-step" />
         ))}
       </div>
     </div>
   );
+
+function fadeInBackground() {
+  if (!bgImgRef.current) return;
+
+  gsap.fromTo(
+    bgImgRef.current,
+    { opacity: 0.08, scale: 1.035 },
+    { opacity: 0.38, scale: 1.02, duration: 0.45, ease: 'power2.out' }
+  );
+}
 }
