@@ -2,6 +2,7 @@
   box-sizing: border-box;
 }
 
+/* Desktop / tablet scrolly */
 .scrolly-layout {
   position: relative;
   min-height: 400vh;
@@ -325,121 +326,147 @@
   color: #4b5563;
 }
 
-/* Mobile optimized */
+/* Mobile-only stacked layout */
+.mobile-scrolly-shell {
+  background:
+    radial-gradient(circle at top, rgba(185, 28, 28, 0.08), transparent 32%),
+    linear-gradient(to bottom, #fffdfb 0%, #fff7f7 100%);
+  color: #1f2937;
+  padding: 20px 12px 28px;
+}
+
+.mobile-map-hero {
+  margin-bottom: 18px;
+}
+
+.mobile-map-hero-inner {
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(127, 29, 29, 0.12);
+  box-shadow: 0 18px 40px rgba(80, 20, 20, 0.08);
+}
+
+.mobile-hero-eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  color: rgba(127, 29, 29, 0.7);
+}
+
+.mobile-map-hero h2 {
+  margin: 0 0 10px;
+  font-size: 1.55rem;
+  line-height: 1.08;
+  color: #7f1d1d;
+}
+
+.mobile-hero-copy {
+  margin: 0 0 14px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.mobile-map-preview {
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(127, 29, 29, 0.1);
+}
+
+.mobile-map-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mobile-region-list {
+  display: grid;
+  gap: 14px;
+}
+
+.mobile-region-card {
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(127, 29, 29, 0.1);
+  box-shadow: 0 14px 34px rgba(80, 20, 20, 0.08);
+}
+
+.mobile-region-media {
+  height: 180px;
+  background: #f3f4f6;
+}
+
+.mobile-region-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-region-body {
+  padding: 14px;
+}
+
+.mobile-step-label {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  color: rgba(127, 29, 29, 0.7);
+}
+
+.mobile-region-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+  color: #7f1d1d;
+}
+
+.mobile-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.mobile-chip {
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7f1d1d;
+  background: rgba(185, 28, 28, 0.06);
+  border: 1px solid rgba(127, 29, 29, 0.12);
+}
+
+.mobile-featured-dance {
+  margin: 0 0 8px;
+  color: #374151;
+  font-size: 0.92rem;
+}
+
+.mobile-region-description {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Hide desktop scrolly on phones */
 @media (max-width: 900px) {
   .scrolly-layout,
   .phase-two-layout {
-    min-height: 280vh;
-  }
-
-  .sticky-stage {
-    height: 100svh;
-  }
-
-  .chapter-indicator {
     display: none;
   }
+}
 
-  .info-panel {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    width: auto;
-    max-width: none;
-    z-index: 30;
-  }
-
-  .premium-panel,
-  .light-theme-panel {
-    padding: 14px 14px 12px;
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-  }
-
-  .panel-topline {
-    margin-bottom: 10px;
-  }
-
-  .panel-title-wrap h2,
-  .info-panel h2 {
-    font-size: 1.5rem;
-    line-height: 1.05;
-  }
-
-  .panel-media {
-    height: 120px;
-    margin: 12px 0;
-    border-radius: 12px;
-  }
-
-  .panel-meta-row {
-    gap: 6px;
-    margin: 10px 0 12px;
-  }
-
-  .panel-chip {
-    font-size: 0.62rem;
-    padding: 5px 8px;
-  }
-
-  .panel-highlight {
-    padding: 10px 10px 9px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-  }
-
-  .panel-highlight-value {
-    font-size: 1rem;
-  }
-
-  .panel-description,
-  .info-panel p {
-    font-size: 0.86rem;
-    line-height: 1.45;
-    margin: 0 0 8px;
-  }
-
-  .panel-footer {
-    gap: 8px;
-  }
-
-  .panel-footer-label {
-    font-size: 0.62rem;
-  }
-
-  .story-column,
-  .phase-two-story {
-    width: 100%;
-    margin: 0;
-    padding: 100svh 12px 0;
-  }
-
-  .story-step,
-  .phase-two-step {
-    min-height: 85vh;
-    align-items: flex-start;
-    justify-content: center;
-  }
-
-  .story-card {
-    width: 100%;
-    margin-top: 24px;
-    padding: 16px;
-    border-radius: 16px;
-  }
-
-  .story-card h3 {
-    font-size: 1.25rem;
-    margin-top: 6px;
-    margin-bottom: 8px;
-  }
-
-  .story-card p {
-    font-size: 0.9rem;
-    line-height: 1.45;
-  }
-
-  .step-label {
-    font-size: 0.68rem;
+/* Hide mobile stacked version on desktop */
+@media (min-width: 901px) {
+  .mobile-scrolly-shell {
+    display: none;
   }
 }

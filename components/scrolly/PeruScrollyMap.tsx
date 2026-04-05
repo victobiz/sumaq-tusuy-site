@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Application, Assets, Container, Sprite, Graphics, Text } from 'pixi.js';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -23,7 +23,60 @@ type ParticleItem = {
   node: Graphics;
 };
 
+function useIsMobile(breakpoint = 900) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
+function MobileRegionCard({
+  region,
+  index,
+}: {
+  region: Region;
+  index: number;
+}) {
+  return (
+    <article className="mobile-region-card">
+      <div className="mobile-region-media">
+        <img src={region.image} alt={region.imageAlt || region.name} />
+      </div>
+
+      <div className="mobile-region-body">
+        <p className="mobile-step-label">
+          Stop {String(index + 1).padStart(2, '0')}
+        </p>
+
+        <h3>{region.name}</h3>
+
+        <div className="mobile-chip-row">
+          {(region.chips || []).map((chip) => (
+            <span key={chip} className="mobile-chip">
+              {chip}
+            </span>
+          ))}
+        </div>
+
+        <p className="mobile-featured-dance">
+          <strong>Featured Dance:</strong> {region.dance}
+        </p>
+
+        <p className="mobile-region-description">{region.description}</p>
+      </div>
+    </article>
+  );
+}
+
 export default function PeruScrollyMap() {
+  const isMobile = useIsMobile();
+
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasHostRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -68,6 +121,14 @@ export default function PeruScrollyMap() {
   };
 
   useEffect(() => {
+    if (isMobile) {
+      if (appRef.current) {
+        appRef.current.destroy(true, { children: true });
+        appRef.current = null;
+      }
+      return;
+    }
+
     let destroyed = false;
 
     const killOwnedScrollTriggers = () => {
@@ -164,17 +225,16 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
-      const isMobile = hostW < 900;
 
       const texture = mapSprite.texture;
       const texW = texture.width || 1000;
       const texH = texture.height || 1400;
 
       mapSprite.x = hostW / 2;
-      mapSprite.y = isMobile ? hostH * 0.38 : hostH / 2;
+      mapSprite.y = hostH / 2;
 
-      const maxW = isMobile ? hostW * 0.82 : hostW * 0.68;
-      const maxH = isMobile ? hostH * 0.58 : hostH * 0.86;
+      const maxW = hostW * 0.68;
+      const maxH = hostH * 0.86;
       const scale = Math.min(maxW / texW, maxH / texH);
 
       mapSprite.width = texW * scale;
@@ -225,17 +285,16 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
-      const isMobile = hostW < 900;
 
       const pointX = mapSprite.x + (region.x - 0.5) * mapSprite.width;
       const pointY = mapSprite.y + (region.y - 0.5) * mapSprite.height;
-      const zoom = isMobile ? Math.min(region.zoom, 1.12) : region.zoom || 1.2;
+      const zoom = region.zoom || 1.2;
 
       return {
         scaleX: zoom,
         scaleY: zoom,
         x: hostW / 2 - pointX * zoom,
-        y: (isMobile ? hostH * 0.38 : hostH / 2) - pointY * zoom,
+        y: hostH / 2 - pointY * zoom,
       };
     };
 
@@ -249,11 +308,7 @@ export default function PeruScrollyMap() {
 
       const hostW = canvasHost.clientWidth || window.innerWidth;
       const hostH = canvasHost.clientHeight || window.innerHeight;
-      const isMobile = hostW < 900;
-
-      const count = isMobile
-        ? Math.min(24, Math.max(14, Math.floor(hostW / 30)))
-        : Math.min(70, Math.max(36, Math.floor(hostW / 22)));
+      const count = Math.min(70, Math.max(36, Math.floor(hostW / 22)));
 
       for (let i = 0; i < count; i++) {
         const node = new Graphics();
@@ -261,15 +316,15 @@ export default function PeruScrollyMap() {
 
         node.circle(0, 0, r);
         node.fill(ACCENT);
-        node.alpha = isMobile ? 0.025 + Math.random() * 0.05 : 0.04 + Math.random() * 0.08;
+        node.alpha = 0.04 + Math.random() * 0.08;
 
         node.x = Math.random() * hostW;
         node.y = Math.random() * hostH;
 
         particleLayer.addChild(node);
 
-        const driftX = (Math.random() - 0.5) * (isMobile ? 16 : 30);
-        const driftY = (isMobile ? 10 : 20) + Math.random() * (isMobile ? 28 : 60);
+        const driftX = (Math.random() - 0.5) * 30;
+        const driftY = 20 + Math.random() * 60;
         const duration = 5 + Math.random() * 5;
 
         gsap.to(node, {
@@ -282,7 +337,7 @@ export default function PeruScrollyMap() {
         });
 
         gsap.to(node, {
-          alpha: isMobile ? 0.01 + Math.random() * 0.04 : 0.02 + Math.random() * 0.08,
+          alpha: 0.02 + Math.random() * 0.08,
           duration: duration * 0.8,
           repeat: -1,
           yoyo: true,
@@ -296,29 +351,26 @@ export default function PeruScrollyMap() {
     const createMarkers = () => {
       const markerLayer = markerLayerRef.current;
       const mapSprite = mapSpriteRef.current;
-      const canvasHost = canvasHostRef.current;
-      if (!markerLayer || !mapSprite || !canvasHost) return;
-
-      const isMobile = canvasHost.clientWidth < 900;
+      if (!markerLayer || !mapSprite) return;
 
       destroyMarkers();
       markerLayer.removeChildren();
 
       regions.forEach((region) => {
         const glow = new Graphics();
-        glow.circle(0, 0, isMobile ? 14 : 20);
+        glow.circle(0, 0, 20);
         glow.fill(ACCENT);
         glow.alpha = 0.06;
         glow.eventMode = 'none';
 
         const pulse = new Graphics();
-        pulse.circle(0, 0, isMobile ? 13 : 18);
-        pulse.stroke({ width: isMobile ? 1.5 : 2, color: ACCENT, alpha: 0.3 });
+        pulse.circle(0, 0, 18);
+        pulse.stroke({ width: 2, color: ACCENT, alpha: 0.3 });
         pulse.alpha = 0.3;
         pulse.eventMode = 'none';
 
         const dot = new Graphics();
-        dot.circle(0, 0, isMobile ? 6 : 8);
+        dot.circle(0, 0, 8);
         dot.fill(ACCENT);
         dot.alpha = 0.55;
         dot.eventMode = 'static';
@@ -328,10 +380,10 @@ export default function PeruScrollyMap() {
           text: region.name,
           style: {
             fill: '#7f1d1d',
-            fontSize: isMobile ? 11 : 13,
+            fontSize: 13,
           },
         });
-        label.alpha = isMobile ? 0 : 0.45;
+        label.alpha = 0.45;
         label.eventMode = 'none';
 
         dot.on('pointertap', () => {
@@ -346,13 +398,11 @@ export default function PeruScrollyMap() {
             overwrite: true,
           });
 
-          if (!isMobile) {
-            gsap.to(label, {
-              alpha: 1,
-              duration: 0.18,
-              overwrite: true,
-            });
-          }
+          gsap.to(label, {
+            alpha: 1,
+            duration: 0.18,
+            overwrite: true,
+          });
 
           gsap.to(glow, {
             alpha: 0.18,
@@ -371,13 +421,11 @@ export default function PeruScrollyMap() {
             overwrite: true,
           });
 
-          if (!isMobile) {
-            gsap.to(label, {
-              alpha: active ? 1 : 0.38,
-              duration: 0.2,
-              overwrite: true,
-            });
-          }
+          gsap.to(label, {
+            alpha: active ? 1 : 0.38,
+            duration: 0.2,
+            overwrite: true,
+          });
 
           gsap.to(glow, {
             alpha: active ? 0.22 : 0.05,
@@ -414,11 +462,7 @@ export default function PeruScrollyMap() {
 
     const buildTimeline = () => {
       const scene = sceneRef.current;
-      const root = rootRef.current;
-      const canvasHost = canvasHostRef.current;
-      if (!scene || !root || !canvasHost) return;
-
-      const isMobile = canvasHost.clientWidth < 900;
+      if (!scene || !rootRef.current) return;
 
       killOwnedScrollTriggers();
       killTimeline();
@@ -465,14 +509,14 @@ export default function PeruScrollyMap() {
 
       const timelineTrigger = ScrollTrigger.create({
         animation: tl,
-        trigger: root,
+        trigger: rootRef.current,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: isMobile ? 0.7 : 1.15,
+        scrub: 1.15,
       });
 
       const activeStateTrigger = ScrollTrigger.create({
-        trigger: root,
+        trigger: rootRef.current,
         start: 'top top',
         end: 'bottom bottom',
         onUpdate: (self) => {
@@ -604,7 +648,40 @@ export default function PeruScrollyMap() {
         appRef.current = null;
       }
     };
-  }, []);
+  }, [isMobile]);
+
+  const mobileCards = useMemo(
+    () =>
+      regions.map((region, index) => (
+        <MobileRegionCard key={region.id} region={region} index={index} />
+      )),
+    []
+  );
+
+  if (isMobile) {
+    return (
+      <section className="mobile-scrolly-shell">
+        <div className="mobile-map-hero">
+          <div className="mobile-map-hero-inner">
+            <p className="mobile-hero-eyebrow">Explore the Culture</p>
+            <h2>Discover dance traditions across Peru</h2>
+            <p className="mobile-hero-copy">
+              Explore the regions below to see how movement, music, and tradition vary across the country.
+            </p>
+
+            <div className="mobile-map-preview">
+              <img
+                src="/peru-map-placeholder.png"
+                alt="Illustrated map of Peru"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mobile-region-list">{mobileCards}</div>
+      </section>
+    );
+  }
 
   return (
     <div className="scrolly-layout phase-two-layout" ref={rootRef}>
