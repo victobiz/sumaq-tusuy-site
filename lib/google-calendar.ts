@@ -26,6 +26,7 @@ import type { Event } from "./types"
 
 const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.readonly"
 const DEFAULT_CALENDAR_ID = "sumajtusuydmv@gmail.com"
+const DEFAULT_EVENT_TIME_ZONE = "America/New_York"
 const FALLBACK_EVENT_IMAGE = "/placeholder-event.jpg"
 const CALENDAR_REVALIDATE_SECONDS = 300
 const UPCOMING_LOOKAHEAD_DAYS = 365
@@ -196,9 +197,12 @@ function formatTime(event: GoogleCalendarEvent) {
 
   const startDate = new Date(startValue)
   const endDate = endValue ? new Date(endValue) : null
+  const timeZone =
+    event.start?.timeZone || event.end?.timeZone || DEFAULT_EVENT_TIME_ZONE
   const formatter = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    timeZone,
   })
 
   if (!endDate || Number.isNaN(endDate.getTime())) {

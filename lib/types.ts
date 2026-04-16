@@ -18,6 +18,7 @@ export interface Dance {
 }
 
 export function formatDate(dateString: string): string {
+  const displayTimeZone = "America/New_York"
   const dateOnlyMatch = dateString.match(/^(\d{4})-(\d{2})-(\d{2})$/)
   const date = dateOnlyMatch
     ? new Date(
@@ -32,5 +33,6 @@ export function formatDate(dateString: string): string {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: dateOnlyMatch ? undefined : displayTimeZone,
   })
 }
