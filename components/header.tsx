@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,12 +19,22 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
-            <span className="text-xl font-bold text-primary">
-              Sumaj Tusuy
-            </span>
-            <span className="block text-xs text-muted-foreground">
-              Peruvian Dance Group
+          <Link href="/" className="-m-1.5 flex items-center gap-3 p-1.5">
+            <Image
+              src="/samaj-tusuy.jpg"
+              alt="Sumaj Tusuy DMV logo"
+              width={52}
+              height={52}
+              className="h-12 w-12 rounded-full border border-border object-cover shadow-sm"
+              priority
+            />
+            <span>
+              <span className="block text-xl font-bold text-primary">
+                Sumaj Tusuy
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Peruvian Dance Group
+              </span>
             </span>
           </Link>
         </div>
@@ -67,7 +78,14 @@ export function Header() {
           />
           <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-border">
             <div className="flex items-center justify-between">
-              <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/" className="-m-1.5 flex items-center gap-3 p-1.5" onClick={() => setMobileMenuOpen(false)}>
+                <Image
+                  src="/samaj-tusuy.jpg"
+                  alt="Sumaj Tusuy DMV logo"
+                  width={44}
+                  height={44}
+                  className="rounded-full border border-border object-cover"
+                />
                 <span className="text-xl font-bold text-primary">Sumaj Tusuy</span>
               </Link>
               <button

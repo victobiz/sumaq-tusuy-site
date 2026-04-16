@@ -24,17 +24,50 @@ const eventTypes = [
   { value: "other", label: "Other" },
 ]
 
+const bookingEmail = "sumajtusuydmv@gmail.com"
+
 export function BookingForm() {
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedEventType, setSelectedEventType] = useState("")
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    
+
+    const form = event.currentTarget
+    const formData = new FormData(form)
+
+    const name = String(formData.get("name") || "").trim()
+    const email = String(formData.get("email") || "").trim()
+    const phone = String(formData.get("phone") || "").trim()
+    const eventDate = String(formData.get("eventDate") || "").trim()
+    const location = String(formData.get("location") || "").trim()
+    const guests = String(formData.get("guests") || "").trim()
+    const message = String(formData.get("message") || "").trim()
+    const eventTypeLabel =
+      eventTypes.find((type) => type.value === selectedEventType)?.label || "Not specified"
+
+    const subject = `Booking Inquiry from ${name || "Website Visitor"}`
+    const body = [
+      "Sumaj Tusuy booking inquiry",
+      "",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone || "Not provided"}`,
+      `Event Date: ${eventDate || "Not provided"}`,
+      `Event Type: ${eventTypeLabel}`,
+      `Event Location: ${location}`,
+      `Estimated Guests: ${guests || "Not provided"}`,
+      "",
+      "Event Details:",
+      message,
+    ].join("\n")
+
+    window.location.href = `mailto:${bookingEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+    form.reset()
+    setSelectedEventType("")
     setIsSubmitting(false)
     setSubmitted(true)
   }
@@ -48,8 +81,8 @@ export function BookingForm() {
             Thank You for Your Inquiry!
           </h3>
           <p className="text-muted-foreground mb-6">
-            We&apos;ve received your booking request and will get back to you within 24-48 hours 
-            to discuss your event details.
+            Your email app should open with a pre-filled message to {bookingEmail}. If it didn&apos;t,
+            you can email us directly and we&apos;ll get back to you within 24-48 hours.
           </p>
           <Button 
             variant="outline" 
@@ -101,7 +134,7 @@ export function BookingForm() {
                 id="phone" 
                 name="phone" 
                 type="tel" 
-                placeholder="(555) 123-4567" 
+                placeholder="(202) 555-0123" 
               />
             </div>
             <div className="space-y-2">
@@ -118,7 +151,12 @@ export function BookingForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="eventType">Event Type *</Label>
-              <Select name="eventType" required>
+              <Select
+                name="eventType"
+                value={selectedEventType}
+                onValueChange={setSelectedEventType}
+                required
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select event type" />
                 </SelectTrigger>
@@ -174,7 +212,7 @@ export function BookingForm() {
           </Button>
           
           <p className="text-xs text-center text-muted-foreground">
-            By submitting this form, you agree to be contacted about your booking inquiry.
+            By submitting this form, your email client will open a draft addressed to {bookingEmail}.
           </p>
         </form>
       </CardContent>

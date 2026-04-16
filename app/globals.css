@@ -129,3 +129,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes deploy-district-flicker {
+  0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  20% {
+    opacity: 0.86;
+    filter: brightness(1.06);
+  }
+  40% {
+    opacity: 0.98;
+    filter: brightness(1.12);
+  }
+  55% {
+    opacity: 0.82;
+    filter: brightness(0.98);
+  }
+  75% {
+    opacity: 1;
+    filter: brightness(1.18);
+  }
+}
+
+.deploy-district-flash {
+  animation: deploy-district-flicker 2.2s steps(2, end) infinite;
+}

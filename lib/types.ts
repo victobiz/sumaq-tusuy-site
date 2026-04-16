@@ -18,7 +18,15 @@ export interface Dance {
 }
 
 export function formatDate(dateString: string): string {
-  const date = new Date(dateString)
+  const dateOnlyMatch = dateString.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  const date = dateOnlyMatch
+    ? new Date(
+        Number(dateOnlyMatch[1]),
+        Number(dateOnlyMatch[2]) - 1,
+        Number(dateOnlyMatch[3]),
+      )
+    : new Date(dateString)
+
   return date.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",

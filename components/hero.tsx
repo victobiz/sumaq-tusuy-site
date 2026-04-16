@@ -18,6 +18,21 @@ export function Hero() {
       </div>
       
       {/* Content */}
+      <div className="absolute right-6 top-24 z-10 md:right-10 md:top-28">
+        <div className="rounded-full bg-background/10 p-2 shadow-2xl ring-1 ring-background/25 backdrop-blur-sm">
+          <div className="rounded-full bg-background/5">
+            <Image
+              src="/samaj-tusuy.jpg"
+              alt="Sumaj Tusuy DMV logo"
+              width={104}
+              height={104}
+              className="rounded-full border border-background/20 object-cover"
+              priority
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <p className="text-secondary font-medium tracking-widest uppercase text-sm mb-4">
           Peruvian Cultural Dance Group
@@ -29,7 +44,7 @@ export function Hero() {
           &quot;Beautiful Dance&quot;
         </p>
         <p className="text-lg md:text-xl text-background/80 max-w-2xl mx-auto mb-10">
-          Celebrating the rich traditions of Peru through authentic dance performances. 
+          Celebrating the rich traditions of Peru through authentic dance performances.
           From elegant Marinera to vibrant Festejo, we bring cultural heritage to life.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

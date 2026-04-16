@@ -24,16 +24,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
+        url: '/favicon.ico',
       },
       {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/ST_favicon.ico',
-      },
+        url: '/icon.png',
+        type: 'image/png',
+      }
     ],
     apple: '/apple-icon.png',
   },
